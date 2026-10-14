@@ -1,4 +1,4 @@
-const express = require('express');
+/*const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 require('dotenv').config();
@@ -81,3 +81,36 @@ app.delete('/api/students/:id', async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 });
+*/
+const express = require('express');
+const cors = require('cors');
+const mongoose = require('mongoose'); // <--- THÊM DÒNG NÀY
+require('dotenv').config();
+
+const app = express();
+
+// Cấu hình CORS linh hoạt cho Production
+const allowedOrigins = [
+  process.env.CLIENT_URL,
+  'http://localhost:5173',
+  'http://localhost:3000'
+];
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
+mongoose.connect(process.env.MONGODB_URI)
+  .then(() => console.log('Connected to MongoDB Atlas successfully'))
+  .catch((err) => console.error('MongoDB connection error:', err));
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin) || process.env.NODE_ENV !== 'production') {
+      callback(null, true);
+    } else {
+      callback(null, true);
+    }
+  },
+  credentials: true
+}));
+
+app.use(express.json());
