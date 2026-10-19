@@ -4,5 +4,4 @@ Student ID: 234818
 Class: DH23TIN05
 Updated project details
 
-em bất lực ạ! lab4 lab5 em làm không hết, nó không raaaaaaaaaaaa
-mong thầy đao hạ lưu tình, em quá bất lực
+em không sửa lỗi được ạ! lab4 5 em làm không hết!
