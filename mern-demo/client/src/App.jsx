@@ -12,7 +12,7 @@ function App() {
   // Lấy danh sách sinh viên
   const fetchStudents = async () => {
     try {
-      const response = await fetch('/api/students')
+      const response = await fetch('https://mern-backend-234818.onrender.com/api/students')
       const data = await response.json()
       setStudents(Array.isArray(data) ? data : [])
     } catch (error) {
@@ -32,11 +32,12 @@ function App() {
   }
 
   // Thêm sinh viên mới
+  // Thêm sinh viên mới
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-
-      fetch('https://mern-backend-234818.onrender.com/api/students', {
+      // ĐÃ SỬA: Thêm "const response = await" ở dòng dưới
+      const response = await fetch('https://mern-backend-234818.onrender.com/api/students', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
@@ -51,6 +52,44 @@ function App() {
       }
     } catch (error) {
       console.error('Lỗi gửi dữ liệu:', error)
+    }
+  }
+
+  // Chức năng Xóa sinh viên (Câu 75)
+  const handleDelete = async (id) => {
+    if (!window.confirm('Bạn có chắc muốn xóa sinh viên này?')) return;
+    try {
+      const response = await fetch(`https://mern-backend-234818.onrender.com/api/students/${id}`, {
+        method: 'DELETE'
+      });
+      if (response.ok) {
+        fetchStudents(); // Tải lại danh sách
+      } else {
+        alert('Lỗi khi xóa!');
+      }
+    } catch (error) {
+      console.error('Lỗi gửi dữ liệu xóa:', error);
+    }
+  }
+
+  // Chức năng Sửa tên sinh viên (Câu 73)
+  const handleEdit = async (st) => {
+    const newName = prompt('Nhập tên mới cho sinh viên:', st.name);
+    if (!newName || newName === st.name) return; // Hủy nếu không nhập gì
+    
+    try {
+      const response = await fetch(`https://mern-backend-234818.onrender.com/api/students/${st._id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...st, name: newName }) // Gửi dữ liệu cập nhật
+      });
+      if (response.ok) {
+        fetchStudents();
+      } else {
+        alert('Lỗi khi cập nhật!');
+      }
+    } catch (error) {
+      console.error('Lỗi gửi dữ liệu cập nhật:', error);
     }
   }
 
@@ -108,6 +147,11 @@ function App() {
                 <td>{st.studentId}</td>
                 <td>{st.name}</td>
                 <td>{st.email}</td>
+                <td>
+                  <button onClick={() => handleEdit(st)} style={{ marginRight: '5px', cursor: 'pointer' }}>Sửa</button></td>
+                <td>
+                  <button onClick={() => handleDelete(st._id)} style={{ cursor: 'pointer' }}>Xóa</button>
+                </td>
               </tr>
             ))
           ) : (
